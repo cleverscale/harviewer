@@ -52,8 +52,8 @@ var browserType = {
         "type": "object",
         "optional": true,
         "properties": {
-            "name": {"type": "string"},
-            "version": {"type": "string"},
+            "name": {"type": "string", "optional": true},
+            "version": {"type": "string", "optional": true},
             "comment": {"type": "string", "optional": true}
         }
     }
