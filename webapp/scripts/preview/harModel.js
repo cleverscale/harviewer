@@ -357,6 +357,12 @@ HarModel.Loader =
         var filePath = Lib.getURLParameter("path");
         if (filePath)
             return this.loadLocalArchive(filePath, callback, errorCallback);
+        else{
+          var element = document.getElementById("har-wrapper");
+          if(element &&  element.getAttribute("data-har")){
+            return this.loadLocalArchive(element.getAttribute("data-har"), callback, errorCallback);
+          }
+        }
     },
 
     loadExample: function(path, callback)

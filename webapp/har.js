@@ -6,7 +6,7 @@
 /**
  * Finds all elements with class="har" on the page and creates HAR preview frame for each.
  * See list of attributes that can be specified on such elements:
- * 
+ *
  * class: (mandatory) elements with this class are considered as HAR preview elements.
  *      The class is removed as soon as the element is processed. Possible additional
  *      classes are not touched.
@@ -19,7 +19,7 @@
  * height: (optional, default: '150px') height of the preview.
  * expand: (optional, default: 'true') true if individual pages should be expanded.
  * validate: (optional, default: 'true') false if HAR validation (according to the schema) should be skipped.
- * 
+ *
  * Embed this script on a page:
  * <script>
  * (function() {
@@ -31,11 +31,16 @@
  * })();
  * if(typeof(harInitialize)!="undefined"){harInitialize()}
  * </script>
- * 
+ *
  * Examples of HAR elements:
  * <div class="har" data-har="http://example.com/my.harp"></div>
  * - load HARP file from an external domain using JSONP.
- * 
+ *
+ *
+ * <div class="har" id="har-wrapper" data-nif=1 data-har="http://example.com/my.harp"></div>
+ * - load HAR file without the iframe. currently support only one per page. and no other #content elemetn must exist.
+ *
+ *
  * <div class="har" data-har="/my.har"></div>
  * - load HAR file from the same domain.
 
@@ -58,7 +63,7 @@ window.harInitialize = function()
         var path = element.getAttribute("data-har");
         if (!path)
             continue;
-
+        var noIframe = element.getAttribute("data-nif");
         var width = element.getAttribute("width");
         var height = element.getAttribute("height");
         var expand = element.getAttribute("expand");
@@ -71,13 +76,20 @@ window.harInitialize = function()
         if (validate == "false")
             args += "&validate=false";
 
-        var iframe = document.createElement("iframe");
-        iframe.setAttribute("style", "border: 1px solid lightgray;");
-        iframe.setAttribute("frameborder", "0");
-        iframe.setAttribute("width", width ? width : "100%");
-        iframe.setAttribute("height", height ? height : "150px");
-        iframe.setAttribute("src", baseUrl + "preview.php" + args);
-        element.appendChild(iframe);
+        if(!noIframe){
+          var iframe = document.createElement("iframe");
+          iframe.setAttribute("style", "border: 1px solid lightgray;");
+          iframe.setAttribute("frameborder", "0");
+          iframe.setAttribute("width", width ? width : "100%");
+          iframe.setAttribute("height", height ? height : "150px");
+          iframe.setAttribute("src", baseUrl + "preview.php" + args);
+          element.appendChild(iframe);
+        } else{
+          var div = document.createElement("div");
+          div.setAttribute("id", "content");
+          element.appendChild(div);
+        }
+
 
         removeHarClass(element);
     }
